@@ -1,10 +1,10 @@
 package com.example.rsserver.controller;
 
-import static com.example.rsserver.games.utils.GamesApiConstants.GAMES_DELETE;
-import static com.example.rsserver.games.utils.GamesApiConstants.GAMES_EDIT;
-import static com.example.rsserver.games.utils.GamesApiConstants.GAMES_GET_ALL;
-import static com.example.rsserver.games.utils.GamesApiConstants.GAMES_GET_SINGLE;
-import static com.example.rsserver.games.utils.GamesApiConstants.GAMES_NEW;
+import static com.example.rsserver.utils.ApiConstants.DELETE_API;
+import static com.example.rsserver.utils.ApiConstants.EDIT_API;
+import static com.example.rsserver.utils.ApiConstants.GET_API;
+import static com.example.rsserver.utils.ApiConstants.NEW_API;
+import static com.example.rsserver.utils.ApiConstants.GAMES_API;
 import static java.util.Arrays.asList;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.example.rsserver.games.controller.GamesController;
 import com.example.rsserver.games.entity.Game;
-import com.example.rsserver.games.repository.GamesRepository;
+import com.example.rsserver.games.service.GamesService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +38,7 @@ public class GamesControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private GamesRepository gamesRepository;
+    private GamesService gamesService;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -51,9 +51,9 @@ public class GamesControllerTest {
         gameSaved.setName("aaa");
         gameSaved.setId(1L);
 
-        when(gamesRepository.save(game)).thenReturn(gameSaved);
+        when(gamesService.create(game)).thenReturn(gameSaved);
 
-        mockMvc.perform(post(GAMES_NEW)
+        mockMvc.perform(post(GAMES_API + NEW_API)
                 .content(objectMapper.writeValueAsString(game))
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -66,9 +66,9 @@ public class GamesControllerTest {
         game.setId(1L);
         game.setName("aaa");
 
-        when(gamesRepository.save(game)).thenReturn(game);
+        when(gamesService.edit(game.getId(), game)).thenReturn(game);
 
-        mockMvc.perform(put(GAMES_EDIT, 1L)
+        mockMvc.perform(put(GAMES_API + EDIT_API, 1L)
                 .content(objectMapper.writeValueAsString(game))
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -86,9 +86,9 @@ public class GamesControllerTest {
         gameToReturn.setName("aaa");
         gameToReturn.setDescription("Description");
 
-        when(gamesRepository.save(game)).thenReturn(gameToReturn);
+        when(gamesService.edit(game.getId(), game)).thenReturn(gameToReturn);
 
-        mockMvc.perform(patch(GAMES_EDIT, 1L)
+        mockMvc.perform(patch(GAMES_API + EDIT_API, 1L)
                 .content(objectMapper.writeValueAsString(game))
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -97,7 +97,7 @@ public class GamesControllerTest {
 
     @Test
     public void shouldDeleteExistingGameSuccessfully () throws Exception {
-        mockMvc.perform(delete(GAMES_DELETE, 1L))
+        mockMvc.perform(delete(GAMES_API + DELETE_API, 1L))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
@@ -107,9 +107,9 @@ public class GamesControllerTest {
         game.setId(1L);
         game.setDescription("Description");
 
-        when(gamesRepository.findById(1L)).thenReturn(Optional.of(game));
+        when(gamesService.getSingle(1L)).thenReturn(Optional.of(game));
 
-        mockMvc.perform(get(GAMES_GET_SINGLE, 1L))
+        mockMvc.perform(get(GAMES_API + GET_API, 1L))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(game)));
     }
@@ -126,9 +126,9 @@ public class GamesControllerTest {
 
         List<Game> listOfGames = asList(game1,game2);
 
-        when(gamesRepository.findAll()).thenReturn(listOfGames);
+        when(gamesService.getAll()).thenReturn(listOfGames);
 
-        mockMvc.perform(get(GAMES_GET_ALL))
+        mockMvc.perform(get(GAMES_API))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(listOfGames)));
     }

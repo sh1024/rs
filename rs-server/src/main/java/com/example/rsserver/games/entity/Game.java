@@ -1,8 +1,11 @@
 package com.example.rsserver.games.entity;
 
+import com.example.rsserver.common.entity.AbstractEntity;
+import javax.persistence.Entity;
 import java.util.Objects;
 
-public class Game {
+@Entity
+public class Game extends AbstractEntity {
 
     private Long id;
     private String name;
