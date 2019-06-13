@@ -35,12 +35,13 @@ public abstract class AbstractService<E extends AbstractEntity, R extends Common
     }
 
     @Override
+    //FIXME patch method
     public E editPart(Long id, E entity) {
         return repository.save(entity);
     }
 
     @Override
     public void delete(Long id) {
-
+        repository.deleteById(id);
     }
 }
