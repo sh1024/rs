@@ -1,0 +1,1 @@
+insert into games (id, name, description, created_at, updated_at, version) values (1, 'tetris', 'old school game', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), 1)

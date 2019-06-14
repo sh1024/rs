@@ -14,7 +14,6 @@ public abstract class AbstractController <E extends AbstractEntity, S extends Co
         this.service = service;
     }
 
-
     @Override
     public E getSingle(long id) {
         return service.getSingle(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,

@@ -3,34 +3,41 @@ package com.example.rsserver.common.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.Persistable;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.Column;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public abstract class AbstractEntity implements Persistable<Long> {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "created_at", nullable = false, updatable = false)
+    @CreatedDate
     @JsonIgnore
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
+    @LastModifiedDate
     @JsonIgnore
     private LocalDateTime updatedAt;
 
+    @Column
     @Version
-    @Column @JsonIgnore
+    @JsonIgnore
     private int version;
 
     @Transient
@@ -38,16 +45,6 @@ public abstract class AbstractEntity implements Persistable<Long> {
     @Override
     public boolean isNew() {
         return (null == getId());
-    }
-
-    @PrePersist
-    void preCreate() {
-        this.createdAt = this.updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
     }
 
     @Override
@@ -59,7 +56,7 @@ public abstract class AbstractEntity implements Persistable<Long> {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    protected void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -67,7 +64,7 @@ public abstract class AbstractEntity implements Persistable<Long> {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
+    protected void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -75,7 +72,7 @@ public abstract class AbstractEntity implements Persistable<Long> {
         return version;
     }
 
-    public void setVersion(int version) {
+    protected void setVersion(int version) {
         this.version = version;
     }
 

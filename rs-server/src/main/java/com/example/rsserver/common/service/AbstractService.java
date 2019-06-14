@@ -13,7 +13,6 @@ public abstract class AbstractService<E extends AbstractEntity, R extends Common
         this.repository = repository;
     }
 
-
     @Override
     public Optional<E> getSingle(long id) {
         return repository.findById(id);

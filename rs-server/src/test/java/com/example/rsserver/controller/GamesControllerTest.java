@@ -43,30 +43,23 @@ public class GamesControllerTest {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    public void shouldAcceptNewGameSuccessfully() throws Exception {
-        Game game = new Game();
-        game.setName("aaa");
+    public void shouldPostNewGameSuccessfully() throws Exception {
+        Game game = createGame("name");
 
-        Game gameSaved = new Game();
-        gameSaved.setName("aaa");
-        gameSaved.setId(1L);
-
-        when(gamesService.create(game)).thenReturn(gameSaved);
+        when(gamesService.create(game)).thenReturn(game);
 
         mockMvc.perform(post(GAMES_API + NEW_API)
                 .content(objectMapper.writeValueAsString(game))
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(gameSaved)));
+                .andExpect(content().json(objectMapper.writeValueAsString(game)));
     }
 
     @Test
-    public void shouldReplaceExistingGameSuccessfully() throws Exception {
-        Game game = new Game();
-        game.setId(1L);
-        game.setName("aaa");
+    public void shouldPutGameSuccessfully() throws Exception {
+        Game game = createGame("name");
 
-        when(gamesService.edit(game.getId(), game)).thenReturn(game);
+        when(gamesService.edit(1L, game)).thenReturn(game);
 
         mockMvc.perform(put(GAMES_API + EDIT_API, 1L)
                 .content(objectMapper.writeValueAsString(game))
@@ -76,23 +69,16 @@ public class GamesControllerTest {
     }
 
     @Test
-    public void shouldReplaceExistingGamePartSuccessfully() throws Exception {
-        Game game = new Game();
-        game.setId(1L);
-        game.setDescription("Description");
+    public void shouldPatchGameSuccessfully() throws Exception {
+        Game game = createGame("name");
 
-        Game gameToReturn = new Game();
-        gameToReturn.setId(1L);
-        gameToReturn.setName("aaa");
-        gameToReturn.setDescription("Description");
-
-        when(gamesService.edit(game.getId(), game)).thenReturn(gameToReturn);
+        when(gamesService.edit(1L, game)).thenReturn(game);
 
         mockMvc.perform(patch(GAMES_API + EDIT_API, 1L)
                 .content(objectMapper.writeValueAsString(game))
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(gameToReturn)));
+                .andExpect(content().json(objectMapper.writeValueAsString(game)));
     }
 
     @Test
@@ -103,9 +89,7 @@ public class GamesControllerTest {
 
     @Test
     public void shouldReturnSingleGame() throws Exception {
-        Game game = new Game();
-        game.setId(1L);
-        game.setDescription("Description");
+        Game game = createGame("name");
 
         when(gamesService.getSingle(1L)).thenReturn(Optional.of(game));
 
@@ -116,13 +100,8 @@ public class GamesControllerTest {
 
     @Test
     public void shouldReturnAllGamesSuccessfully() throws Exception {
-        Game game1 = new Game();
-        game1.setId(1L);
-        game1.setDescription("Desc1");
-
-        Game game2 = new Game();
-        game2.setId(1L);
-        game2.setDescription("Desc2");
+        Game game1 = createGame("name1");
+        Game game2 = createGame("name2");
 
         List<Game> listOfGames = asList(game1,game2);
 
@@ -132,4 +111,11 @@ public class GamesControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(listOfGames)));
     }
+
+    private Game createGame(String name) {
+        Game game = new Game();
+        game.setName(name);
+        return game;
+    }
+
 }
