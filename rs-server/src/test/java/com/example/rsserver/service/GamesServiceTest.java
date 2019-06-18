@@ -10,13 +10,14 @@ import com.example.rsserver.AbstractDatabaseTest;
 import com.example.rsserver.games.entity.Game;
 import com.example.rsserver.games.repository.GamesRepository;
 import com.example.rsserver.games.service.GamesService;
+import com.example.rsserver.utils.DomainObjectMerger;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 import java.time.LocalDateTime;
 
-@Import({GamesService.class})
+@Import({GamesService.class, DomainObjectMerger.class})
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts="classpath:/test-sql/CRUD.sql")
 public class GamesServiceTest extends AbstractDatabaseTest {
 
@@ -68,5 +69,14 @@ public class GamesServiceTest extends AbstractDatabaseTest {
         assertThat(saved.getDescription(), nullValue());
         assertThat(saved.getVersion(), equalTo(2));
         assertThat(saved.getUpdatedAt(), greaterThan(timeToCheck));
+    }
+
+    @Test
+    public void shouldReplaceGameWithoutNullCorrectly() {
+        Game game = new Game();
+        game.setDescription("New description");
+
+        Game result = gamesService.editPart(1L, game);
+        assertThat(result.getName(), notNullValue());
     }
 }

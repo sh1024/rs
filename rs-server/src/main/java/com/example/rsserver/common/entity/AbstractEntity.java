@@ -38,7 +38,7 @@ public abstract class AbstractEntity implements Persistable<Long> {
     @Column
     @Version
     @JsonIgnore
-    private int version;
+    private Integer version;
 
     @Transient
     @JsonIgnore
@@ -72,7 +72,7 @@ public abstract class AbstractEntity implements Persistable<Long> {
         return version;
     }
 
-    protected void setVersion(int version) {
+    protected void setVersion(Integer version) {
         this.version = version;
     }
 
