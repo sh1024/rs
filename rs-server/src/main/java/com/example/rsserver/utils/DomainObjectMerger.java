@@ -1,13 +1,11 @@
 package com.example.rsserver.utils;
 
-import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
-@Component
 public class DomainObjectMerger {
 
-    public void merge(Object src, Object dest) {
+    public static void merge(Object src, Object dest) {
         Assert.notNull(src, "Source for field copy cannot be null");
         Assert.notNull(dest, "Destination for field copy cannot be null");
 

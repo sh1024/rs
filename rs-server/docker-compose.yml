@@ -1,0 +1,19 @@
+version: '3.3'
+services:
+  postgres:
+    image: postgres:10.1
+    ports:
+      - 5432:5432
+    restart: always
+    environment:
+      - DEBUG=false
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - DB_NAME=postgres
+  app:
+    image: com.example/rs-server
+    depends_on:
+      - postgres
+    ports:
+      - 8080:8080
+    restart: always
