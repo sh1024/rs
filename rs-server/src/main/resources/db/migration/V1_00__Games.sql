@@ -7,4 +7,3 @@ CREATE TABLE games (
   description               VARCHAR(512)
 );
 
-create index idx_games_key on games(key);
