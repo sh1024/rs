@@ -36,8 +36,8 @@ public abstract class AbstractController <E extends AbstractEntity, S extends Co
     }
 
     @Override
-    public E editPart(long id, E entity) {
-        return service.edit(id, entity);
+    public E partialEdit(long id, E entity) {
+        return service.partialEdit(id, entity);
     }
 
     @Override

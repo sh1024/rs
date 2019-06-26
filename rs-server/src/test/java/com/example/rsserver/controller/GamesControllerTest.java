@@ -51,7 +51,7 @@ public class GamesControllerTest {
         mockMvc.perform(post(GAMES_API + NEW_API)
                 .content(objectMapper.writeValueAsString(game))
                 .contentType(APPLICATION_JSON_UTF8))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(content().json(objectMapper.writeValueAsString(game)));
     }
 
@@ -72,7 +72,7 @@ public class GamesControllerTest {
     public void shouldPatchGameSuccessfully() throws Exception {
         Game game = createGame("name");
 
-        when(gamesService.edit(1L, game)).thenReturn(game);
+        when(gamesService.partialEdit(1L, game)).thenReturn(game);
 
         mockMvc.perform(patch(GAMES_API + EDIT_API, 1L)
                 .content(objectMapper.writeValueAsString(game))

@@ -26,6 +26,7 @@ public interface CommonController <E extends AbstractEntity> {
     Iterable<E> getAll();
 
     @PostMapping(NEW_API)
+    @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     E create(@RequestBody E entity);
 
@@ -33,7 +34,7 @@ public interface CommonController <E extends AbstractEntity> {
     @ResponseBody E edit(@PathVariable long id, @RequestBody E entity);
 
     @PatchMapping(EDIT_API)
-    @ResponseBody E editPart(@PathVariable long id, @RequestBody E entity);
+    @ResponseBody E partialEdit(@PathVariable long id, @RequestBody E entity);
 
     @DeleteMapping(DELETE_API)
     @ResponseStatus(HttpStatus.NO_CONTENT)

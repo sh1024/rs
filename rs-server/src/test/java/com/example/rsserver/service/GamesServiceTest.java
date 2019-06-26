@@ -76,7 +76,7 @@ public class GamesServiceTest extends AbstractDatabaseTest {
         Game game = new Game();
         game.setDescription("New description");
 
-        Game result = gamesService.editPart(1L, game);
+        Game result = gamesService.partialEdit(1L, game);
         assertThat(result.getName(), notNullValue());
     }
 }

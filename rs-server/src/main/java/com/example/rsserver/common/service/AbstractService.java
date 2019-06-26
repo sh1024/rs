@@ -35,7 +35,7 @@ public abstract class AbstractService<E extends AbstractEntity, R extends Common
     }
 
     @Override
-    public E editPart(Long id, E entity) {
+    public E partialEdit(Long id, E entity) {
         Optional<E> optionalEntity = repository.findById(id);
         E loadedEntity = optionalEntity.orElseThrow(() ->
                 new IllegalArgumentException("Entity was not found " + id));

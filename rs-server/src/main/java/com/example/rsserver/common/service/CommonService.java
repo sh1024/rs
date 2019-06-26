@@ -13,7 +13,7 @@ public interface CommonService<E extends AbstractEntity> {
 
     E edit(Long id, E entity);
 
-    E editPart(Long id, E entity);
+    E partialEdit(Long id, E entity);
 
     void delete(Long id);
 
