@@ -16,8 +16,8 @@ export default (state = {}, action) => {
         case ADD_GAME:
         case EDIT_GAME:
                 return {...state, [action.payload.id]: action.payload};
-        // case DELETE_GAME:
-        //         return _.omit(state, action.payload);
+        case DELETE_GAME:
+                return _.omit(state, action.payload);
         default: 
             return state;
     }
