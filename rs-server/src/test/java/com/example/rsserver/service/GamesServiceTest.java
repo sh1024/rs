@@ -2,6 +2,7 @@ package com.example.rsserver.service;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -55,10 +56,10 @@ public class GamesServiceTest extends AbstractDatabaseTest {
 
     @Test
     public void shouldReplaceGameCorrectly() {
-        Game game = gamesService.getSingle(1L).orElse(null);
-        assertThat(game, notNullValue());
+        Game game = new Game();
         game.setName("newName");
         game.setDescription(null);
+
         LocalDateTime timeToCheck = LocalDateTime.now();
 
         Game saved = gamesService.edit(1L, game);
@@ -69,10 +70,11 @@ public class GamesServiceTest extends AbstractDatabaseTest {
         assertThat(saved.getDescription(), nullValue());
         assertThat(saved.getVersion(), equalTo(2));
         assertThat(saved.getUpdatedAt(), greaterThan(timeToCheck));
+        assertThat(saved.getCreatedAt(), lessThan(timeToCheck));
     }
 
     @Test
-    public void shouldReplaceGameWithoutNullCorrectly() {
+    public void shouldReplaceGameWithoutNullPropertiesCorrectly() {
         Game game = new Game();
         game.setDescription("New description");
 

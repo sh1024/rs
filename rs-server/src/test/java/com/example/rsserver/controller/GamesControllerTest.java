@@ -40,7 +40,7 @@ public class GamesControllerTest {
     @MockBean
     private GamesService gamesService;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     public void shouldPostNewGameSuccessfully() throws Exception {

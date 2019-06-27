@@ -52,11 +52,15 @@ public abstract class AbstractEntity implements Persistable<Long> {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    protected void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -64,7 +68,7 @@ public abstract class AbstractEntity implements Persistable<Long> {
         return updatedAt;
     }
 
-    protected void setUpdatedAt(LocalDateTime updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -72,7 +76,7 @@ public abstract class AbstractEntity implements Persistable<Long> {
         return version;
     }
 
-    protected void setVersion(Integer version) {
+    public void setVersion(Integer version) {
         this.version = version;
     }
 

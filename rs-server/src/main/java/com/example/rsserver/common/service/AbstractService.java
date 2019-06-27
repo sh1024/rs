@@ -31,6 +31,12 @@ public abstract class AbstractService<E extends AbstractEntity, R extends Common
 
     @Override
     public E edit(Long id, E entity) {
+        E loadedEntity = repository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("Entity was not found " + id));
+        entity.setId(id);
+        // I know what I'm doing
+        entity.setVersion(loadedEntity.getVersion());
+        entity.setCreatedAt(loadedEntity.getCreatedAt());
         return repository.save(entity);
     }
 
