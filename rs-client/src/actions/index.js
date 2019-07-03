@@ -16,7 +16,6 @@ export const fetchGames = () => async dispatch => {
 
 export const addGame = (game) => async dispatch => {
     const response = await games.post('/v1/games/new', game);
-    console.log(response);
     if (response.status === 200 || response.status === 201) {
         dispatch({ type: ADD_GAME, payload: response.data });
         history.push('/games');
