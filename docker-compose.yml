@@ -19,14 +19,10 @@ services:
      restart: always
    client:
      container_name: client-app
-     image: client-app
+     build:
+        context: ./rs-client/
      depends_on:
        - app
        - postgres
-     volumes:
-       - ./rs-client/src:/app/src
-       - ./rs-client/public:/app/public
      ports:
-       - 3000:3000
-     environment:
-       - NODE_ENV=development
+       - 80:80
