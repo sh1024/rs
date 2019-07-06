@@ -7,9 +7,9 @@ public final class LoggerUtils {
     private LoggerUtils() {}
 
     public static Logger getLogger() {
-        final Throwable t = new Throwable();
+        Throwable t = new Throwable();
         t.fillInStackTrace();
-        final String clazz = t.getStackTrace()[1].getClassName();
+        String clazz = t.getStackTrace()[1].getClassName();
         return LoggerFactory.getLogger(clazz);
     }
 }
