@@ -1,5 +1,7 @@
 package com.example.rsserver.security;
 
+import static org.springframework.util.StringUtils.isEmpty;
+
 import com.example.rsserver.security.dto.JwtRequest;
 import com.example.rsserver.security.dto.JwtResponse;
 import org.springframework.http.ResponseEntity;
@@ -24,16 +26,18 @@ public class JwtAuthenticationController {
 
     @PostMapping(value = "/authenticate")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) {
-        UserDetails userDetails = inMemoryUserDetailsManager.loadUserByUsername(authenticationRequest.getUsername());
-        if (authenticate(userDetails, authenticationRequest.getPassword())) {
-            String token = JwtTokenUtil.generateToken(userDetails);
-            return ResponseEntity.ok(new JwtResponse(token));
+        if (!isEmpty(authenticationRequest.getUsername())) {
+            UserDetails userDetails = inMemoryUserDetailsManager.loadUserByUsername(authenticationRequest.getUsername());
+            if (checkUserNamePassword(userDetails, authenticationRequest.getPassword())) {
+                String token = JwtTokenUtil.generateToken(userDetails);
+                return ResponseEntity.ok(new JwtResponse(token));
+            }
         }
         return ResponseEntity.status(401).body("Authentication failed");
 
     }
 
-    private boolean authenticate(UserDetails userDetails, String providedPassword) {
+    private boolean checkUserNamePassword(UserDetails userDetails, String providedPassword) {
         boolean isAccountOk = userDetails.isEnabled()
                 && userDetails.isAccountNonExpired()
                 && userDetails.isAccountNonLocked()
