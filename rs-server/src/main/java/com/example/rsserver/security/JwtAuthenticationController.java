@@ -1,5 +1,7 @@
 package com.example.rsserver.security;
 
+import com.example.rsserver.security.dto.JwtRequest;
+import com.example.rsserver.security.dto.JwtResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;

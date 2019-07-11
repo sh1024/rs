@@ -1,7 +1,6 @@
 package com.example.rsserver.security;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,11 +18,13 @@ import java.io.IOException;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    @Autowired
     private InMemoryUserDetailsManager inMemoryUserDetailsManager;
-
-    @Autowired
     private JwtTokenUtil jwtTokenUtil;
+
+    public JwtRequestFilter(InMemoryUserDetailsManager inMemoryUserDetailsManager, JwtTokenUtil jwtTokenUtil) {
+        this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
+        this.jwtTokenUtil = jwtTokenUtil;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -38,10 +39,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             jwtToken = requestTokenHeader.substring(7);
             try {
                 username = jwtTokenUtil.getUsernameFromToken(jwtToken);
-            } catch (IllegalArgumentException e) {
-                System.out.println("Unable to get JWT Token");
-            } catch (ExpiredJwtException e) {
-                System.out.println("JWT Token has expired");
+            } catch (Exception e) {
+                logger.error("Error occurred while getting username from token", e);
             }
         } else {
             logger.warn("JWT Token does not begin with Bearer String");

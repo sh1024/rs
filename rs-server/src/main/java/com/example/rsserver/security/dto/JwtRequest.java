@@ -1,4 +1,4 @@
-package com.example.rsserver.security;
+package com.example.rsserver.security.dto;
 
 public class JwtRequest {
 
