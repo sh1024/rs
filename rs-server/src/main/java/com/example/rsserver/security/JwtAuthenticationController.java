@@ -13,14 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class JwtAuthenticationController {
 
-    private JwtTokenUtil jwtTokenUtil;
     private InMemoryUserDetailsManager inMemoryUserDetailsManager;
     private PasswordEncoder passwordEncoder;
 
-    public JwtAuthenticationController(JwtTokenUtil jwtTokenUtil,
-                                       InMemoryUserDetailsManager inMemoryUserDetailsManager,
+    public JwtAuthenticationController(InMemoryUserDetailsManager inMemoryUserDetailsManager,
                                        PasswordEncoder passwordEncoder) {
-        this.jwtTokenUtil = jwtTokenUtil;
         this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
         this.passwordEncoder = passwordEncoder;
     }
@@ -29,7 +26,7 @@ public class JwtAuthenticationController {
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) {
         UserDetails userDetails = inMemoryUserDetailsManager.loadUserByUsername(authenticationRequest.getUsername());
         if (authenticate(userDetails, authenticationRequest.getPassword())) {
-            String token = jwtTokenUtil.generateToken(userDetails);
+            String token = JwtTokenUtil.generateToken(userDetails);
             return ResponseEntity.ok(new JwtResponse(token));
         }
         return ResponseEntity.status(401).body("Authentication failed");
