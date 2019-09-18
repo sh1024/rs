@@ -2,10 +2,13 @@ package com.example.rsserver.controller;
 
 import static com.example.rsserver.utils.ApiConstants.DELETE_API;
 import static com.example.rsserver.utils.ApiConstants.EDIT_API;
+import static com.example.rsserver.utils.ApiConstants.GET_ALL_API;
 import static com.example.rsserver.utils.ApiConstants.GET_API;
 import static com.example.rsserver.utils.ApiConstants.NEW_API;
 import static com.example.rsserver.utils.ApiConstants.GAMES_API;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -14,6 +17,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import com.example.rsserver.games.controller.GamesController;
 import com.example.rsserver.games.entity.Game;
@@ -24,6 +28,11 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -106,12 +115,42 @@ public class GamesControllerTest {
         Game game2 = createGame("name2");
 
         List<Game> listOfGames = asList(game1,game2);
-
         when(gamesService.getAll()).thenReturn(listOfGames);
 
         mockMvc.perform(get(GAMES_API))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(listOfGames)));
+    }
+
+    @Test
+    public void shouldCorrectlyWorkWithPageable() throws Exception {
+        Game game1 = createGame("aa");
+        Game game2 = createGame("vv");
+        Game game3 = createGame("bb");
+        Game game4 = createGame("cc");
+        Game game5 = createGame("dd");
+
+        List<Game> listOfGames = asList(game1, game2, game3, game4, game5);
+        Page<Game> pages = new PageImpl<>(listOfGames);
+        Pageable pageable = PageRequest.of(0, 20, Sort.unsorted());
+        when(gamesService.getAllPageable("", pageable)).thenReturn(pages);
+
+        mockMvc.perform(get(GAMES_API + GET_ALL_API).param("filter", ""))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.content.length()", is(5)))
+                .andExpect(jsonPath("$.content[0].name", is("aa")))
+                .andExpect(jsonPath("$.content[1].name", is("vv")))
+                .andExpect(jsonPath("$.content[2].name", is("bb")))
+                .andExpect(jsonPath("$.content[3].name", is("cc")))
+                .andExpect(jsonPath("$.content[4].name", is("dd")));
+
+
+        pages = new PageImpl<>(singletonList(game2));
+        when(gamesService.getAllPageable("vv", pageable)).thenReturn(pages);
+        mockMvc.perform(get(GAMES_API + GET_ALL_API).param("filter", "vv"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.content.length()", is(1)))
+                .andExpect(jsonPath("$.content[0].name", is("vv")));
     }
 
     private Game createGame(String name) {
